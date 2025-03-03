@@ -9,19 +9,24 @@ import {render} from '../render.js';
 export default class MainPresenter {
   eventListComponent = new EventsListView();
 
-  constructor() {
-    this.eventsContainer = document.querySelector('.trip-events');
-    this.filterContainer = document.querySelector('.trip-controls__filters');
+  constructor(listContainer, filterContainer, eventsModel) {
+    this.eventsContainer = listContainer;
+    this.filterContainer = filterContainer;
+    this.eventsModel = eventsModel;
   }
 
   init() {
+    this.eventsList = [...this.eventsModel.getEvents()];
+    this.offersList = [...this.eventsModel.getOffers()];
+
     render(new FiltersView(), this.filterContainer);
     render(new SortingView(), this.eventsContainer);
     render(this.eventListComponent, this.eventsContainer);
-    render(new EventEditorView(), this.eventListComponent.getElement());
+    render(new EventEditorView({point: this.eventsList[0], offers: this.offersList}), this.eventListComponent.getElement());
 
-    for (let i = 0; i < 3; i++) {
-      render(new EventView(), this.eventListComponent.getElement());
+    for (let i = 1; i < this.eventsList.length; i++) {
+      const offersForEvent = this.offersList.find((offer) => offer.type === this.eventsList[i].type);
+      render(new EventView({point: this.eventsList[i], offers: offersForEvent}), this.eventListComponent.getElement());
     }
 
     render(new EventCreatorView(), this.eventListComponent.getElement());
