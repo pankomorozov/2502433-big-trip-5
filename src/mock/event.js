@@ -75,6 +75,64 @@ const mockEvents = [
     ],
     type: getRandomArrayElement(EVENT_TYPES)
   },
+  {
+    id: 7,
+    price: 8500,
+    dateFrom: new Date('2024-10-18'),
+    dateTo: new Date('2024-12-24'),
+    destination: getRandomDestinationID(),
+    isFavorite: true,
+    offers: [
+      1, 2
+    ],
+    type: getRandomArrayElement(EVENT_TYPES)
+  },
+  {
+    id: 8,
+    price: 600,
+    dateFrom: new Date('2023-11-18'),
+    dateTo: new Date('2023-12-28'),
+    destination: getRandomDestinationID(),
+    isFavorite: false,
+    offers: [
+      1
+    ],
+    type: getRandomArrayElement(EVENT_TYPES)
+  },
+  {
+    id: 9,
+    price: 500,
+    dateFrom: new Date('2023-12-23'),
+    dateTo: new Date('2023-12-24'),
+    destination: getRandomDestinationID(),
+    isFavorite: true,
+    offers: [
+      4
+    ],
+    type: getRandomArrayElement(EVENT_TYPES)
+  },
+  {
+    id: 10,
+    price: 50,
+    dateFrom: new Date('2023-12-24'),
+    dateTo: new Date('2023-12-25'),
+    destination: getRandomDestinationID(),
+    isFavorite: false,
+    offers: [],
+    type: getRandomArrayElement(EVENT_TYPES)
+  },
+  {
+    id: 11,
+    price: 680,
+    dateFrom: new Date('2023-10-18'),
+    dateTo: new Date('2023-10-24'),
+    destination: getRandomDestinationID(),
+    isFavorite: false,
+    offers: [
+      3
+    ],
+    type: getRandomArrayElement(EVENT_TYPES)
+  },
 ];
 
 function getRandomEvent() {
