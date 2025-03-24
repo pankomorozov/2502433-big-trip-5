@@ -3,6 +3,7 @@ import SortingView from '../view/sorting.js';
 import EventsListView from '../view/points-list.js';
 import EventEditorView from '../view/point-editor.js';
 import FiltersView from '../view/filters.js';
+import EmptyListView from '../view/empty-list-view.js';
 import { render, replace } from '../framework/render.js';
 
 export default class MainPresenter {
@@ -22,7 +23,13 @@ export default class MainPresenter {
     this.offersList = [...this.#eventsModel.offers];
     this.destinationsList = [...this.#eventsModel.destinations];
 
-    render(new FiltersView(), this.#filterContainer);
+    render(new FiltersView({points: this.eventsList}), this.#filterContainer);
+
+    if (this.eventsList.length === 0) {
+      render(new EmptyListView(), this.#listContainer);
+      return;
+    }
+
     render(new SortingView(), this.#listContainer);
     render(this.#eventListComponent, this.#listContainer);
 

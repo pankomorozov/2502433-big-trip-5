@@ -1,4 +1,4 @@
-import { EVENT_TYPES } from '../const.js';
+import { DateFormats, EVENT_TYPES } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 import { formatDate } from '../utils.js';
 
@@ -39,10 +39,10 @@ function createEditPointFormTemplate(point, allOffers, destinations) {
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(dateFrom)}">
+                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(dateFrom, DateFormats.FULL_DATE)}">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(dateTo)}">
+                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(dateTo, DateFormats.FULL_DATE)}">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
