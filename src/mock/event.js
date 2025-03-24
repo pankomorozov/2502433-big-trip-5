@@ -1,6 +1,6 @@
 import { EVENT_TYPES } from '../const.js';
 import { getRandomArrayElement } from '../utils.js';
-import { getRandomDestination } from './destination.js';
+import { getRandomDestinationID } from './destination.js';
 
 const mockEvents = [
   {
@@ -8,7 +8,7 @@ const mockEvents = [
     price: 1100,
     dateFrom: new Date('2023-12-20'),
     dateTo: new Date('2023-12-23'),
-    destination: getRandomDestination(),
+    destination: getRandomDestinationID(),
     isFavorite: false,
     offers: [
       1
@@ -20,7 +20,7 @@ const mockEvents = [
     price: 2000,
     dateFrom: new Date('2023-12-15'),
     dateTo: new Date('2023-12-23'),
-    destination: getRandomDestination(),
+    destination: getRandomDestinationID(),
     isFavorite: true,
     offers: [
       1
@@ -32,7 +32,7 @@ const mockEvents = [
     price: 100,
     dateFrom: new Date('2023-12-20'),
     dateTo: new Date('2023-12-21'),
-    destination: getRandomDestination(),
+    destination: getRandomDestinationID(),
     isFavorite: false,
     offers: [
       2, 3
@@ -44,7 +44,7 @@ const mockEvents = [
     price: 8100,
     dateFrom: new Date('2023-12-01'),
     dateTo: new Date('2023-12-31'),
-    destination: getRandomDestination(),
+    destination: getRandomDestinationID(),
     isFavorite: false,
     offers: [
       2
@@ -56,7 +56,7 @@ const mockEvents = [
     price: 1300,
     dateFrom: new Date('2023-12-19'),
     dateTo: new Date('2023-12-23'),
-    destination: getRandomDestination(),
+    destination: getRandomDestinationID(),
     isFavorite: true,
     offers: [
       1, 3
@@ -68,7 +68,7 @@ const mockEvents = [
     price: 600,
     dateFrom: new Date('2023-10-18'),
     dateTo: new Date('2023-12-24'),
-    destination: getRandomDestination(),
+    destination: getRandomDestinationID(),
     isFavorite: false,
     offers: [
       1, 4

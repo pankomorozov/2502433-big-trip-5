@@ -1,10 +1,12 @@
 import { EVENT_TYPES } from '../const.js';
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { formatDate } from '../utils.js';
 
-function createEditPointFormTemplate(point, allOffers) {
+function createEditPointFormTemplate(point, allOffers, destinations) {
   const {price, dateFrom, dateTo, destination, offers, type} = point;
   const pointTypeOffers = allOffers.find((offer) => offer.type === type);
+  const destinationInfo = destinations.find((item) => item.id === destination);
+  const renderDestinationsList = destinations.map((dest) => `<option value="${dest.name}"></option>`).join('');
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
@@ -29,11 +31,9 @@ function createEditPointFormTemplate(point, allOffers) {
                     <label class="event__label  event__type-output" for="event-destination-1">
                       ${type}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationInfo.name}" list="destination-list-1">
                     <datalist id="destination-list-1">
-                      <option value="Amsterdam"></option>
-                      <option value="Geneva"></option>
-                      <option value="Chamonix"></option>
+                      ${renderDestinationsList}
                     </datalist>
                   </div>
 
@@ -77,10 +77,10 @@ function createEditPointFormTemplate(point, allOffers) {
 
                   <section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                    <p class="event__destination-description">${destination.description}</p>
+                    <p class="event__destination-description">${destinationInfo.description}</p>
                     <div class="event__photos-container">
                       <div class="event__photos-tape">
-                      ${destination.pictures.map((image) => `<img class="event__photo" src="${image.src}" alt="${image.description}">`).join('')}
+                      ${destinationInfo.pictures.map((image) => `<img class="event__photo" src="${image.src}" alt="${image.description}">`).join('')}
                       </div>
                     </div>
                   </section>
@@ -89,25 +89,36 @@ function createEditPointFormTemplate(point, allOffers) {
             </li>`;
 }
 
-export default class EventEditorView {
-  constructor({point, offers}) {
-    this.point = point;
-    this.offers = offers;
+export default class EventEditorView extends AbstractView {
+  #point = null;
+  #offers = null;
+  #destinations = null;
+  #handleFormSubmit = null;
+  #handleFormReset = null;
+
+  constructor({point, offers, destinations, onFormSubmit, onFormReset}) {
+    super();
+    this.#point = point;
+    this.#offers = offers;
+    this.#destinations = destinations;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleFormReset = onFormReset;
+
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('form').addEventListener('reset', this.#formResetHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formResetHandler);
   }
 
-  getTemplate() {
-    return createEditPointFormTemplate(this.point, this.offers);
+  get template() {
+    return createEditPointFormTemplate(this.#point, this.#offers, this.#destinations);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #formResetHandler = () => {
+    this.#handleFormReset();
+  };
 }
