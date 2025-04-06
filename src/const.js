@@ -3,7 +3,8 @@ const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-i
 const DateFormats = {
   MONTH: 'MMM D',
   TIME: 'HH:mm',
-  FULL_DATE: 'DD/MM/YY HH:mm'
+  FULL_DATE: 'DD/MM/YY HH:mm',
+  TOTAL_MONTH: 'D MMM'
 };
 
 const FilterTypes = {
@@ -13,4 +14,12 @@ const FilterTypes = {
   PAST: 'past'
 };
 
-export {EVENT_TYPES, DateFormats, FilterTypes};
+const SortTypes = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFER: 'offer'
+};
+
+export {EVENT_TYPES, DateFormats, FilterTypes, SortTypes};

@@ -1,4 +1,6 @@
 import { RenderPosition, render } from '../framework/render';
+import { sort } from '../utils.js';
+import { SortTypes } from '../const.js';
 import HeaderView from '../view/header-view';
 
 export default class HeaderPresenter {
@@ -14,11 +16,6 @@ export default class HeaderPresenter {
     this.eventsList = [...this.#eventsModel.events];
     this.destinationsList = [...this.#eventsModel.destinations];
 
-    render(new HeaderView({points: this.eventsList, destinations: this.#getCheckedDestinations()}), this.#container, RenderPosition.AFTERBEGIN);
-  }
-
-  #getCheckedDestinations() {
-    const destinationsIds = this.eventsList.map((event) => event.destination);
-    return this.destinationsList.filter((destination) => destinationsIds.includes(destination.id));
+    render(new HeaderView({points: sort[SortTypes.DAY](this.eventsList), destinations: this.destinationsList}), this.#container, RenderPosition.AFTERBEGIN);
   }
 }

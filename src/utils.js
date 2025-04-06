@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { FilterTypes } from './const.js';
+import { FilterTypes, SortTypes } from './const.js';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 
@@ -21,8 +21,11 @@ function formatDate(date, dateFormat) {
   return date ? dayjs(date).format(dateFormat) : '';
 }
 
-function calculateDuration(startDate, endDate) {
+function calculateDuration(startDate, endDate, inMilliseconds = false) {
   const timeDuration = dayjs(endDate).diff(startDate);
+  if (inMilliseconds) {
+    return timeDuration;
+  }
   let timeFormat = 'DD[D] HH[H] mm[M]';
   if (timeDuration < MS_IN_DAY) {
     timeFormat = 'HH[H] mm[M]';
@@ -44,4 +47,14 @@ function updateItem(items, newItem) {
   return items.map((item) => item.id === newItem.id ? newItem : item);
 }
 
-export {getRandomArrayElement, getRandomNumber, formatDate, calculateDuration, filter, updateItem};
+function isEscapeKey(evt) {
+  return evt.key === 'Escape';
+}
+
+const sort = {
+  [SortTypes.DAY]: (points) => points.sort((first, second) => dayjs(first.dateFrom).diff(dayjs(second.dateFrom))),
+  [SortTypes.PRICE]: (points) => points.sort((first, second) => second.price - first.price),
+  [SortTypes.TIME]: (points) => points.sort((first, second) => calculateDuration(second.dateFrom, second.dateTo, true) - calculateDuration(first.dateFrom, first.dateTo, true))
+};
+
+export {getRandomArrayElement, getRandomNumber, formatDate, calculateDuration, filter, updateItem, isEscapeKey, sort};

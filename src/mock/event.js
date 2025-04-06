@@ -6,8 +6,8 @@ const mockEvents = [
   {
     id: 1,
     price: 1100,
-    dateFrom: new Date('2023-12-20'),
-    dateTo: new Date('2023-12-23'),
+    dateFrom: '2019-07-03T22:55:56.845Z',
+    dateTo: '2019-07-11T11:22:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: false,
     offers: [
@@ -18,8 +18,8 @@ const mockEvents = [
   {
     id: 2,
     price: 2000,
-    dateFrom: new Date('2023-12-15'),
-    dateTo: new Date('2023-12-23'),
+    dateFrom: '2023-07-02T22:55:56.845Z',
+    dateTo: '2023-08-01T11:25:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: true,
     offers: [
@@ -30,8 +30,8 @@ const mockEvents = [
   {
     id: 3,
     price: 100,
-    dateFrom: new Date('2023-12-20'),
-    dateTo: new Date('2023-12-21'),
+    dateFrom: '2024-02-10T10:55:56.845Z',
+    dateTo: '2024-03-11T11:22:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: false,
     offers: [
@@ -42,8 +42,8 @@ const mockEvents = [
   {
     id: 4,
     price: 8100,
-    dateFrom: new Date('2023-12-01'),
-    dateTo: new Date('2023-12-31'),
+    dateFrom: '2023-12-10T22:55:56.845Z',
+    dateTo: '2023-12-31T11:22:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: false,
     offers: [
@@ -54,8 +54,8 @@ const mockEvents = [
   {
     id: 5,
     price: 1300,
-    dateFrom: new Date('2023-12-19'),
-    dateTo: new Date('2023-12-23'),
+    dateFrom: '2023-07-07T22:55:56.845Z',
+    dateTo: '2023-07-11T11:22:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: true,
     offers: [
@@ -66,8 +66,8 @@ const mockEvents = [
   {
     id: 6,
     price: 600,
-    dateFrom: new Date('2023-10-18'),
-    dateTo: new Date('2023-12-24'),
+    dateFrom: '2023-12-21T22:55:56.845Z',
+    dateTo: '2023-12-22T11:22:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: false,
     offers: [
@@ -78,8 +78,8 @@ const mockEvents = [
   {
     id: 7,
     price: 8500,
-    dateFrom: new Date('2024-10-18'),
-    dateTo: new Date('2024-12-24'),
+    dateFrom: '2023-07-18T10:55:56.845Z',
+    dateTo: '2023-07-18T11:22:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: true,
     offers: [
@@ -90,8 +90,8 @@ const mockEvents = [
   {
     id: 8,
     price: 600,
-    dateFrom: new Date('2023-11-18'),
-    dateTo: new Date('2023-12-28'),
+    dateFrom: '2020-07-09T22:55:56.845Z',
+    dateTo: '2020-07-11T11:22:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: false,
     offers: [
@@ -102,8 +102,8 @@ const mockEvents = [
   {
     id: 9,
     price: 500,
-    dateFrom: new Date('2023-12-23'),
-    dateTo: new Date('2023-12-24'),
+    dateFrom: '2019-07-10T22:55:56.845Z',
+    dateTo: '2019-07-11T11:22:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: true,
     offers: [
@@ -114,8 +114,8 @@ const mockEvents = [
   {
     id: 10,
     price: 50,
-    dateFrom: new Date('2023-12-24'),
-    dateTo: new Date('2023-12-25'),
+    dateFrom: '2023-10-09T22:55:56.845Z',
+    dateTo: '2023-11-11T10:22:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: false,
     offers: [],
@@ -124,8 +124,8 @@ const mockEvents = [
   {
     id: 11,
     price: 680,
-    dateFrom: new Date('2023-10-18'),
-    dateTo: new Date('2023-10-24'),
+    dateFrom: '2021-10-10T22:55:56.845Z',
+    dateTo: '2021-10-15T11:22:13.375Z',
     destination: getRandomDestinationID(),
     isFavorite: false,
     offers: [
