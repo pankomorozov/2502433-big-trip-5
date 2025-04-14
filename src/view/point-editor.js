@@ -1,6 +1,7 @@
 import { DateFormats, EVENT_TYPES } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { formatDate } from '../utils.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 function createPointTypesTemplate(type) {
   return (
@@ -76,10 +77,10 @@ function createEditPointFormTemplate(point, allOffers, destinations) {
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(dateFrom, DateFormats.FULL_DATE)}">
+                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom}">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(dateTo, DateFormats.FULL_DATE)}">
+                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo}">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -125,6 +126,8 @@ export default class EditPointView extends AbstractStatefulView {
   #destinations = null;
   #handleFormSubmit = null;
   #handleFormReset = null;
+  #dateFromDatepicker = null;
+  #dateToDatepicker = null;
 
   constructor({point, offers, destinations, onFormSubmit, onFormReset}) {
     super();
@@ -139,6 +142,19 @@ export default class EditPointView extends AbstractStatefulView {
 
   get template() {
     return createEditPointFormTemplate(this._state, this.#offers, this.#destinations);
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this.#dateFromDatepicker) {
+      this.#dateFromDatepicker.destroy();
+      this.#dateFromDatepicker = null;
+    }
+    if (this.#dateToDatepicker) {
+      this.#dateToDatepicker.destroy();
+      this.#dateToDatepicker = null;
+    }
   }
 
   #formSubmitHandler = (evt) => {
@@ -180,6 +196,43 @@ export default class EditPointView extends AbstractStatefulView {
     });
   };
 
+  #dateFromChangeHandler = ([date]) => {
+    this.updateElement({
+      dateFrom: date
+    });
+  };
+
+  #dateToChangeHandler = ([date]) => {
+    this.updateElement({
+      dateTo: date
+    });
+  };
+
+  #setDatepickers() {
+    this.#dateFromDatepicker = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        dateFormat: DateFormats.FULL_DATE,
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._state.dateFrom,
+        maxDate: this._state.dateTo,
+        onChange: this.#dateFromChangeHandler
+      },
+    );
+    this.#dateToDatepicker = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        dateFormat: DateFormats.FULL_DATE,
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._state.dateTo,
+        minDate: this._state.dateFrom,
+        onChange: this.#dateToChangeHandler
+      },
+    );
+  }
+
   reset(point) {
     this.updateElement(point);
   }
@@ -192,5 +245,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#offersChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+
+    this.#setDatepickers();
   }
 }

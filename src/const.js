@@ -3,7 +3,7 @@ const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-i
 const DateFormats = {
   MONTH: 'MMM D',
   TIME: 'HH:mm',
-  FULL_DATE: 'DD/MM/YY HH:mm',
+  FULL_DATE: 'd/m/y H:i',
   TOTAL_MONTH: 'D MMM'
 };
 
