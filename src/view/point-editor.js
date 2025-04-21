@@ -2,6 +2,7 @@ import { DateFormats, EVENT_TYPES } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import he from 'he';
 
 function createPointTypesTemplate(type) {
   return (
@@ -69,7 +70,7 @@ function createEditPointFormTemplate(point, allOffers, destinations) {
                     <label class="event__label  event__type-output" for="event-destination-1">
                       ${type}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationInfo.name}" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destinationInfo.name)}" list="destination-list-1">
                     <datalist id="destination-list-1">
                       ${renderDestinationsList}
                     </datalist>
@@ -88,7 +89,7 @@ function createEditPointFormTemplate(point, allOffers, destinations) {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+                    <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -126,16 +127,18 @@ export default class EditPointView extends AbstractStatefulView {
   #destinations = null;
   #handleFormSubmit = null;
   #handleFormReset = null;
+  #handleDeleteBtnClick = null;
   #dateFromDatepicker = null;
   #dateToDatepicker = null;
 
-  constructor({point, offers, destinations, onFormSubmit, onFormReset}) {
+  constructor({point, offers, destinations, onFormSubmit, onFormReset, onDeleteClick}) {
     super();
     this._setState(point);
     this.#offers = offers;
     this.#destinations = destinations;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleFormReset = onFormReset;
+    this.#handleDeleteBtnClick = onDeleteClick;
 
     this._restoreHandlers();
   }
@@ -233,13 +236,18 @@ export default class EditPointView extends AbstractStatefulView {
     );
   }
 
+  #deletePointHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteBtnClick(this._state);
+  };
+
   reset(point) {
     this.updateElement(point);
   }
 
   _restoreHandlers() {
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('form').addEventListener('reset', this.#formResetHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deletePointHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formResetHandler);
     this.element.querySelector('.event__type-group').addEventListener('click', this.#pointTypeChangeHandler);
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#offersChangeHandler);

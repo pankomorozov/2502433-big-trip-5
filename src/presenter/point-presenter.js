@@ -2,6 +2,7 @@ import EventView from '../view/point.js';
 import EventEditorView from '../view/point-editor.js';
 import { render, replace, remove } from '../framework/render.js';
 import { isEscapeKey } from '../utils.js';
+import { UpdateType, UserAction } from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -47,6 +48,7 @@ export default class PointPresenter {
       destinations: this.#destinations,
       onFormSubmit: this.#editFormSubmitHandler,
       onFormReset: this.#editFormResetHandler,
+      onDeleteClick: this.#deletePointHandler
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -105,11 +107,15 @@ export default class PointPresenter {
   };
 
   #favoriteBtnClickHandler = () => {
-    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#handleDataChange(UserAction.UPDATE_EVENT, UpdateType.PATCH, {...this.#point, isFavorite: !this.#point.isFavorite});
+  };
+
+  #deletePointHandler = (point) => {
+    this.#handleDataChange(UserAction.DELETE_EVENT, UpdateType.MINOR, point);
   };
 
   #editFormSubmitHandler = (point) => {
-    this.#handleDataChange(point);
+    this.#handleDataChange(UserAction.UPDATE_EVENT, UpdateType.MINOR, point);
     this.#replaceEditFormToPoint();
     document.removeEventListener('keydown', this.#escapeKeydownHandler);
   };

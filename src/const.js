@@ -14,6 +14,13 @@ const FilterTypes = {
   PAST: 'past'
 };
 
+const NoEventsTexts = {
+  [FilterTypes.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterTypes.FUTURE]: 'There are no future events now',
+  [FilterTypes.PAST]: 'There are no past events now',
+  [FilterTypes.PRESENT]: 'There are no present events now'
+};
+
 const SortTypes = {
   DAY: 'day',
   EVENT: 'event',
@@ -22,4 +29,16 @@ const SortTypes = {
   OFFER: 'offer'
 };
 
-export {EVENT_TYPES, DateFormats, FilterTypes, SortTypes};
+const UserAction = {
+  UPDATE_EVENT: 'UPDATE_EVENT',
+  ADD_EVENT: 'ADD_EVENT',
+  DELETE_EVENT: 'DELETE_EVENT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export {EVENT_TYPES, DateFormats, FilterTypes, SortTypes, UserAction, UpdateType, NoEventsTexts};
