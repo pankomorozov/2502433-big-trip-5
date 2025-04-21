@@ -43,10 +43,6 @@ const filter = {
   [FilterTypes.PAST]: (events) => events.filter((event) => dayjs().isAfter(dayjs(event.dateTo)))
 };
 
-function updateItem(items, newItem) {
-  return items.map((item) => item.id === newItem.id ? newItem : item);
-}
-
 function isEscapeKey(evt) {
   return evt.key === 'Escape';
 }
@@ -57,4 +53,4 @@ const sort = {
   [SortTypes.TIME]: (points) => points.sort((first, second) => calculateDuration(second.dateFrom, second.dateTo, true) - calculateDuration(first.dateFrom, first.dateTo, true))
 };
 
-export {getRandomArrayElement, getRandomNumber, formatDate, calculateDuration, filter, updateItem, isEscapeKey, sort};
+export {getRandomArrayElement, getRandomNumber, formatDate, calculateDuration, filter, isEscapeKey, sort};
