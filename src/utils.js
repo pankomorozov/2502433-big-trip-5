@@ -13,10 +13,6 @@ function getRandomNumber(min = 1, max = 100) {
   return Math.floor(min + Math.random() * (max + 1 - min));
 }
 
-function getRandomArrayElement(items) {
-  return items[getRandomNumber(0, items.length - 1)];
-}
-
 function formatDate(date, dateFormat) {
   return date ? dayjs(date).format(dateFormat) : '';
 }
@@ -53,4 +49,4 @@ const sort = {
   [SortTypes.TIME]: (points) => points.sort((first, second) => calculateDuration(second.dateFrom, second.dateTo, true) - calculateDuration(first.dateFrom, first.dateTo, true))
 };
 
-export {getRandomArrayElement, getRandomNumber, formatDate, calculateDuration, filter, isEscapeKey, sort};
+export {getRandomNumber, formatDate, calculateDuration, filter, isEscapeKey, sort};

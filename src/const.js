@@ -1,5 +1,8 @@
 const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
+const AUTHORIZATION = 'Basic jfdsg6fgjh';
+const END_POINT = 'https://24.objects.htmlacademy.pro/big-trip';
+
 const DateFormats = {
   MONTH: 'MMM D',
   TIME: 'HH:mm',
@@ -39,6 +42,13 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
+  ERROR: 'ERROR'
 };
 
-export {EVENT_TYPES, DateFormats, FilterTypes, SortTypes, UserAction, UpdateType, NoEventsTexts};
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT'
+};
+
+export {EVENT_TYPES, DateFormats, FilterTypes, SortTypes, UserAction, UpdateType, NoEventsTexts, Method, AUTHORIZATION, END_POINT};
