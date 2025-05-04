@@ -44,7 +44,7 @@ function createAvaliableOffersTemplate(pointTypeOffers, offers) {
 }
 
 function createEditPointFormTemplate(point, allOffers, destinations) {
-  const {price, dateFrom, dateTo, destination, offers, type} = point;
+  const {price, dateFrom, dateTo, destination, offers, type, isSaving, isDeleting} = point;
   const pointTypeOffers = allOffers.find((offer) => offer.type === type);
   const destinationInfo = destinations.find((item) => item.id === destination);
   const renderDestinationsList = destinations.map((dest) => `<option value="${dest.name}"></option>`).join('');
@@ -92,8 +92,8 @@ function createEditPointFormTemplate(point, allOffers, destinations) {
                     <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
                   </div>
 
-                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">Delete</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
+                  <button class="event__reset-btn" type="reset">${isDeleting ? 'Deleting...' : 'Delete'}</button>
                   <button class="event__rollup-btn" type="button">
                     <span class="visually-hidden">Open event</span>
                   </button>
@@ -133,7 +133,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   constructor({point, offers, destinations, onFormSubmit, onFormReset, onDeleteClick}) {
     super();
-    this._setState(point);
+    this._setState({...point, isSaving: false, isDeleting: false});
     this.#offers = offers;
     this.#destinations = destinations;
     this.#handleFormSubmit = onFormSubmit;
@@ -162,6 +162,8 @@ export default class EditPointView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
+    delete this._state.isDeleting;
+    delete this._state.isSaving;
     this.#handleFormSubmit(this._state);
   };
 
@@ -181,7 +183,7 @@ export default class EditPointView extends AbstractStatefulView {
   #offersChangeHandler = (evt) => {
     if (evt.target.checked) {
       this._setState({
-        offers: [...this._state.offers, parseInt(evt.target.dataset.id, 10)]
+        offers: [...this._state.offers, evt.target.dataset.id]
       });
     }
   };
@@ -195,7 +197,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   #priceInputHandler = (evt) => {
     this._setState({
-      price: evt.target.value
+      price: parseInt(evt.target.value, 10)
     });
   };
 
@@ -250,7 +252,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deletePointHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formResetHandler);
     this.element.querySelector('.event__type-group').addEventListener('click', this.#pointTypeChangeHandler);
-    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offersChangeHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('click', this.#offersChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
 

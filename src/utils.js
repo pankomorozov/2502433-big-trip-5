@@ -9,10 +9,6 @@ const MS_IN_HOUR = 3600000;
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 
-function getRandomNumber(min = 1, max = 100) {
-  return Math.floor(min + Math.random() * (max + 1 - min));
-}
-
 function formatDate(date, dateFormat) {
   return date ? dayjs(date).format(dateFormat) : '';
 }
@@ -49,4 +45,10 @@ const sort = {
   [SortTypes.TIME]: (points) => points.sort((first, second) => calculateDuration(second.dateFrom, second.dateTo, true) - calculateDuration(first.dateFrom, first.dateTo, true))
 };
 
-export {getRandomNumber, formatDate, calculateDuration, filter, isEscapeKey, sort};
+export {
+  formatDate,
+  calculateDuration,
+  filter,
+  isEscapeKey,
+  sort
+};
