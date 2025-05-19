@@ -55,7 +55,7 @@ function createAvaliableOffersTemplate(pointTypeOffers, offers) {
 
 function createOffersSectionTemplate(allOffers, checkedOffers, type) {
   const pointTypeOffers = allOffers.find((offer) => offer.type === type);
-  if (pointTypeOffers.length === 0) {
+  if (pointTypeOffers.offers.length === 0) {
     return '';
   }
   return (
@@ -70,7 +70,7 @@ function createOffersSectionTemplate(allOffers, checkedOffers, type) {
 }
 
 function createDestinationSectionTemplate(destinationInfo) {
-  if (!destinationInfo) {
+  if (!destinationInfo || (!destinationInfo.description && destinationInfo.pictures.length === 0)) {
     return '';
   }
   return (
@@ -78,11 +78,13 @@ function createDestinationSectionTemplate(destinationInfo) {
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${destinationInfo.description}</p>
 
-      <div class="event__photos-container">
-        <div class="event__photos-tape">
-          ${destinationInfo.pictures.map((image) => `<img class="event__photo" src="${image.src}" alt="${image.description}">`).join('')}
+      ${destinationInfo.pictures.length === 0 ? '' : `
+        <div class="event__photos-container">
+          <div class="event__photos-tape">
+            ${destinationInfo.pictures.map((image) => `<img class="event__photo" src="${image.src}" alt="${image.description}">`).join('')}
+          </div>
         </div>
-      </div>
+      `}
     </section>`
   );
 }
@@ -190,6 +192,45 @@ export default class AddPointView extends AbstractStatefulView {
     }
   }
 
+  _restoreHandlers() {
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formResetHandler);
+    this.element.querySelector('.event__type-group').addEventListener('click', this.#pointTypeChangeHandler);
+    if (this.element.querySelector('.event__available-offers')) {
+      this.element.querySelector('.event__available-offers').addEventListener('click', this.#offersChangeHandler);
+    }
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+
+    this.#setDatepickers();
+  }
+
+  #setDatepickers() {
+    this.#dateFromDatepicker = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        dateFormat: DateFormats.FULL_DATE,
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._state.dateFrom || '',
+        minDate: 'today',
+        maxDate: this._state.dateTo,
+        onChange: this.#dateFromChangeHandler
+      },
+    );
+    this.#dateToDatepicker = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        dateFormat: DateFormats.FULL_DATE,
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._state.dateTo || '',
+        minDate: this._state.dateFrom,
+        onChange: this.#dateToChangeHandler
+      },
+    );
+  }
+
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     delete this._state.isSaving;
@@ -231,51 +272,14 @@ export default class AddPointView extends AbstractStatefulView {
   };
 
   #dateFromChangeHandler = ([date]) => {
-    this.updateElement({
+    this._setState({
       dateFrom: date
     });
   };
 
   #dateToChangeHandler = ([date]) => {
-    this.updateElement({
+    this._setState({
       dateTo: date
     });
   };
-
-  #setDatepickers() {
-    this.#dateFromDatepicker = flatpickr(
-      this.element.querySelector('#event-start-time-1'),
-      {
-        dateFormat: DateFormats.FULL_DATE,
-        enableTime: true,
-        'time_24hr': true,
-        defaultDate: this._state.dateFrom || '',
-        minDate: 'today',
-        maxDate: this._state.dateTo,
-        onChange: this.#dateFromChangeHandler
-      },
-    );
-    this.#dateToDatepicker = flatpickr(
-      this.element.querySelector('#event-end-time-1'),
-      {
-        dateFormat: DateFormats.FULL_DATE,
-        enableTime: true,
-        'time_24hr': true,
-        defaultDate: this._state.dateTo || '',
-        minDate: this._state.dateFrom,
-        onChange: this.#dateToChangeHandler
-      },
-    );
-  }
-
-  _restoreHandlers() {
-    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formResetHandler);
-    this.element.querySelector('.event__type-group').addEventListener('click', this.#pointTypeChangeHandler);
-    this.element.querySelector('.event__available-offers').addEventListener('click', this.#offersChangeHandler);
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
-    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
-
-    this.#setDatepickers();
-  }
 }

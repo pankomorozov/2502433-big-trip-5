@@ -22,11 +22,13 @@ function createHeaderTemplate({totalPrice, destinationNames, points}) {
 export default class HeaderView extends AbstractView {
   #points = null;
   #destinations = null;
+  #offers = null;
 
-  constructor({points, destinations}) {
+  constructor({points, destinations, offers}) {
     super();
     this.#points = points;
     this.#destinations = destinations;
+    this.#offers = offers;
   }
 
   get template() {
@@ -38,7 +40,14 @@ export default class HeaderView extends AbstractView {
   }
 
   #calculateTotalPrice() {
-    return this.#points.reduce((total, point) => total + parseInt(point.price, 10), 0);
+    const pointsPrice = this.#points.reduce((total, point) => total + parseInt(point.price, 10), 0);
+    const offersPrice = this.#points.reduce((total, point) => total + this.#calculateCheckedOffersPrice(point.type, point.offers), 0);
+    return pointsPrice + offersPrice;
+  }
+
+  #calculateCheckedOffersPrice(type, offersIds) {
+    const offersForType = this.#offers.find((offer) => offer.type === type);
+    return offersForType.offers.filter((offer) => offersIds.includes(offer.id)).reduce((total, offer) => total + offer.price, 0);
   }
 
   #getDestinationNames() {

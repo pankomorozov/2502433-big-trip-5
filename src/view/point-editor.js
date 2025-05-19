@@ -43,6 +43,33 @@ function createAvaliableOffersTemplate(pointTypeOffers, offers) {
   );
 }
 
+function createOffersSectionTemplate(pointTypeOffers, offers) {
+  return (
+    `<section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+      <div class="event__available-offers">
+        ${createAvaliableOffersTemplate(pointTypeOffers, offers)}
+      </div>
+    </section>`
+  );
+}
+
+function createDestinationSectionTemplate(destinationInfo) {
+  return (
+    `<section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      <p class="event__destination-description">${destinationInfo.description}</p>
+      ${destinationInfo.pictures.length === 0 ? '' : `
+        <div class="event__photos-container">
+          <div class="event__photos-tape">
+            ${destinationInfo.pictures.map((image) => `<img class="event__photo" src="${image.src}" alt="${image.description}">`).join('')}
+          </div>
+        </div>
+      `}
+    </section>`
+  );
+}
+
 function createEditPointFormTemplate(point, allOffers, destinations) {
   const {price, dateFrom, dateTo, destination, offers, type, isSaving, isDeleting} = point;
   const pointTypeOffers = allOffers.find((offer) => offer.type === type);
@@ -99,23 +126,9 @@ function createEditPointFormTemplate(point, allOffers, destinations) {
                   </button>
                 </header>
                 <section class="event__details">
-                  <section class="event__section  event__section--offers">
-                    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+                  ${pointTypeOffers.offers.length === 0 ? '' : createOffersSectionTemplate(pointTypeOffers, offers)}
 
-                    <div class="event__available-offers">
-                      ${createAvaliableOffersTemplate(pointTypeOffers, offers)}
-                    </div>
-                  </section>
-
-                  <section class="event__section  event__section--destination">
-                    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                    <p class="event__destination-description">${destinationInfo.description}</p>
-                    <div class="event__photos-container">
-                      <div class="event__photos-tape">
-                      ${destinationInfo.pictures.map((image) => `<img class="event__photo" src="${image.src}" alt="${image.description}">`).join('')}
-                      </div>
-                    </div>
-                  </section>
+                  ${destinationInfo.description || destinationInfo.pictures.length !== 0 ? createDestinationSectionTemplate(destinationInfo) : ''}
                 </section>
               </form>
             </li>`;
@@ -158,6 +171,49 @@ export default class EditPointView extends AbstractStatefulView {
       this.#dateToDatepicker.destroy();
       this.#dateToDatepicker = null;
     }
+  }
+
+  _restoreHandlers() {
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deletePointHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formResetHandler);
+    this.element.querySelector('.event__type-group').addEventListener('click', this.#pointTypeChangeHandler);
+    if (this.element.querySelector('.event__available-offers')) {
+      this.element.querySelector('.event__available-offers').addEventListener('click', this.#offersChangeHandler);
+    }
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+
+    this.#setDatepickers();
+  }
+
+  reset(point) {
+    this.updateElement(point);
+  }
+
+  #setDatepickers() {
+    this.#dateFromDatepicker = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        dateFormat: DateFormats.FULL_DATE,
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._state.dateFrom,
+        maxDate: this._state.dateTo,
+        onChange: this.#dateFromChangeHandler
+      },
+    );
+    this.#dateToDatepicker = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        dateFormat: DateFormats.FULL_DATE,
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._state.dateTo,
+        minDate: this._state.dateFrom,
+        onChange: this.#dateToChangeHandler
+      },
+    );
   }
 
   #formSubmitHandler = (evt) => {
@@ -213,49 +269,8 @@ export default class EditPointView extends AbstractStatefulView {
     });
   };
 
-  #setDatepickers() {
-    this.#dateFromDatepicker = flatpickr(
-      this.element.querySelector('#event-start-time-1'),
-      {
-        dateFormat: DateFormats.FULL_DATE,
-        enableTime: true,
-        'time_24hr': true,
-        defaultDate: this._state.dateFrom,
-        maxDate: this._state.dateTo,
-        onChange: this.#dateFromChangeHandler
-      },
-    );
-    this.#dateToDatepicker = flatpickr(
-      this.element.querySelector('#event-end-time-1'),
-      {
-        dateFormat: DateFormats.FULL_DATE,
-        enableTime: true,
-        'time_24hr': true,
-        defaultDate: this._state.dateTo,
-        minDate: this._state.dateFrom,
-        onChange: this.#dateToChangeHandler
-      },
-    );
-  }
-
   #deletePointHandler = (evt) => {
     evt.preventDefault();
     this.#handleDeleteBtnClick(this._state);
   };
-
-  reset(point) {
-    this.updateElement(point);
-  }
-
-  _restoreHandlers() {
-    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deletePointHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formResetHandler);
-    this.element.querySelector('.event__type-group').addEventListener('click', this.#pointTypeChangeHandler);
-    this.element.querySelector('.event__available-offers').addEventListener('click', this.#offersChangeHandler);
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
-    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
-
-    this.#setDatepickers();
-  }
 }

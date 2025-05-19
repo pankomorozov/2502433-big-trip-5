@@ -6,9 +6,9 @@ import FailedLoadView from '../view/failed-load-view.js';
 import PointPresenter from './point-presenter.js';
 import NewEventBtnView from '../view/new-event-btn-view.js';
 import NewPointPresenter from './new-point-presenter.js';
-import { filter, sort } from '../utils.js';
+import { filter, sort, isEscapeKey } from '../utils.js';
 import { FilterTypes, NoEventsTexts, SortTypes, TimeLimit, UpdateType, UserAction } from '../const.js';
-import { remove, render } from '../framework/render.js';
+import { RenderPosition, remove, render } from '../framework/render.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 export default class MainPresenter {
@@ -27,6 +27,7 @@ export default class MainPresenter {
   #currentSortType = SortTypes.DAY;
   #pointPresenters = new Map();
   #isLoading = true;
+  #isAddingNewEvent = false;
   #newPointPresenter = null;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
@@ -70,10 +71,11 @@ export default class MainPresenter {
 
   #renderSortList() {
     this.#sortComponent = new SortingView({onSortChange: this.#handleSortChange, currentSortType: this.#currentSortType});
-    render(this.#sortComponent, this.#listContainer);
+    render(this.#sortComponent, this.#listContainer, RenderPosition.AFTERBEGIN);
   }
 
   #renderFullPointsBoard({resetSortType = false} = {}) {
+    render(this.#eventListComponent, this.#listContainer);
     if (this.#isLoading) {
       render(this.#loadingComponent, this.#listContainer);
       return;
@@ -90,7 +92,6 @@ export default class MainPresenter {
   }
 
   #renderPoints() {
-    render(this.#eventListComponent, this.#listContainer);
     for (let i = 0; i < this.events.length; i++) {
       this.#renderPoint(this.events[i]);
     }
@@ -110,7 +111,7 @@ export default class MainPresenter {
     remove(this.#loadingComponent);
     remove(this.#failedLoadComponent);
     remove(this.#sortComponent);
-    if (this.#newPointPresenter) {
+    if (!this.#isAddingNewEvent && this.#newPointPresenter) {
       this.#newPointPresenter.destroy();
     }
     this.#clearPointsBoard();
@@ -126,7 +127,8 @@ export default class MainPresenter {
       offers: this.offers,
       destinations: this.destinations,
       onDataChange: this.#handleViewAction,
-      onModeChange: this.#handleModeChange
+      onModeChange: this.#handleModeChange,
+      newPointFormComponent: this.#newPointPresenter
     });
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
@@ -145,10 +147,12 @@ export default class MainPresenter {
         break;
       case UserAction.ADD_EVENT:
         this.#newPointPresenter.setSaving();
+        this.#isAddingNewEvent = false;
         try {
           await this.#eventsModel.addEvent(updateType, update);
         } catch(error) {
           this.#newPointPresenter.setAborting();
+          this.#isAddingNewEvent = true;
         }
         break;
       case UserAction.DELETE_EVENT:
@@ -205,7 +209,7 @@ export default class MainPresenter {
   };
 
   #handleAddPointBtnClick = () => {
-    this.#addBtnComponent.element.disabled = true;
+    this.#isAddingNewEvent = true;
     this.#newPointPresenter = new NewPointPresenter({
       container: this.#eventListComponent.element,
       offers: this.offers,
@@ -215,10 +219,27 @@ export default class MainPresenter {
     });
     this.#currentSortType = SortTypes.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterTypes.EVERYTHING);
+    this.#handleModeChange();
     this.#newPointPresenter.init();
+    this.#addBtnComponent.element.disabled = true;
+    document.addEventListener('keydown', this.#escapeKeydownHandler);
+    remove(this.#noEventsComponent);
+  };
+
+  #escapeKeydownHandler = (evt) => {
+    if (isEscapeKey(evt)) {
+      evt.preventDefault();
+      this.#newPointPresenter.destroy();
+      document.removeEventListener('keydown', this.#escapeKeydownHandler);
+    }
   };
 
   #handleNewEventFormClose = () => {
     this.#addBtnComponent.element.disabled = false;
+    document.removeEventListener('keydown', this.#escapeKeydownHandler);
+    this.#isAddingNewEvent = false;
+    if (this.events.length === 0) {
+      this.#renderNoEventsComponent();
+    }
   };
 }
