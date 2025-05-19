@@ -2,12 +2,15 @@ import dayjs from 'dayjs';
 import { FilterTypes, SortTypes } from './const.js';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import duration from 'dayjs/plugin/duration';
 
 const MS_IN_DAY = 86400000;
 const MS_IN_HOUR = 3600000;
+const MIN_DAYS_IN_MONTH = 29;
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
+dayjs.extend(duration);
 
 function formatDate(date, dateFormat) {
   return date ? dayjs(date).format(dateFormat) : '';
@@ -25,7 +28,8 @@ function calculateDuration(startDate, endDate, inMilliseconds = false) {
   if (timeDuration < MS_IN_HOUR) {
     timeFormat = 'mm[M]';
   }
-  return dayjs(timeDuration).format(timeFormat);
+
+  return Math.floor(dayjs.duration(timeDuration).asDays()) > MIN_DAYS_IN_MONTH ? `${Math.floor(dayjs.duration(timeDuration).asDays())}D ${dayjs.duration(timeDuration).format('HH[H] mm[M]')}` : dayjs.duration(timeDuration).format(timeFormat);
 }
 
 const filter = {

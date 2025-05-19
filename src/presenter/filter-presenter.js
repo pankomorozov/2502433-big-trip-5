@@ -14,6 +14,7 @@ export default class FilterPresenter {
     this.#filterModel = filterModel;
 
     this.#eventsModel.addObserver(this.#handleEventsChange);
+    this.#filterModel.addObserver(this.#handleEventsChange);
   }
 
   get events() {

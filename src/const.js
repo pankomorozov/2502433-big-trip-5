@@ -1,6 +1,8 @@
+import {nanoid} from 'nanoid';
+
 const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
-const AUTHORIZATION = 'Basic jfdsg6fgjh';
+const AUTHORIZATION = `Basic ${nanoid()}`;
 const END_POINT = 'https://24.objects.htmlacademy.pro/big-trip';
 
 const DateFormats = {

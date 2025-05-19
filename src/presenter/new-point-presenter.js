@@ -29,14 +29,9 @@ export default class NewPointPresenter {
     render(this.#addPointFormComponent, this.#container, RenderPosition.AFTERBEGIN);
   }
 
-  #handleFormSubmit = (point) => {
-    this.#handleDataChange(UserAction.ADD_EVENT, UpdateType.MAJOR, point);
-  };
-
-  #closeAddPointForm = () => {
-    remove(this.#addPointFormComponent);
-    this.#handleResetForm();
-  };
+  destroy() {
+    this.#closeAddPointForm();
+  }
 
   setSaving() {
     this.#addPointFormComponent.updateElement({
@@ -54,7 +49,12 @@ export default class NewPointPresenter {
     this.#addPointFormComponent.shake(resetFormState);
   }
 
-  destroy() {
-    this.#closeAddPointForm();
-  }
+  #closeAddPointForm = () => {
+    remove(this.#addPointFormComponent);
+    this.#handleResetForm();
+  };
+
+  #handleFormSubmit = (point) => {
+    this.#handleDataChange(UserAction.ADD_EVENT, UpdateType.MAJOR, point);
+  };
 }

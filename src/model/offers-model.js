@@ -9,13 +9,13 @@ export default class OffersModel extends Observable {
     this.#eventsApiService = eventsApiService;
   }
 
+  get offers() {
+    return this.#offers;
+  }
+
   init() {
     this.#eventsApiService.offers.then((offers) => {
       this.#offers = offers;
-    });
-  }
-
-  get offers() {
-    return this.#offers;
+    }).catch((err) => err);
   }
 }
