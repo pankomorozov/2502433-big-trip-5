@@ -237,9 +237,15 @@ export default class EditPointView extends AbstractStatefulView {
   };
 
   #offersChangeHandler = (evt) => {
+    const offerId = evt.target.dataset.id;
+
     if (evt.target.checked) {
       this._setState({
-        offers: [...this._state.offers, evt.target.dataset.id]
+        offers: [...this._state.offers, offerId]
+      });
+    } else {
+      this._setState({
+        offers: this._state.offers.filter((id) => id !== offerId)
       });
     }
   };
